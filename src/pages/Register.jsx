@@ -79,16 +79,8 @@ export default function Register() {
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent bg-[length:20px_20px]" />
 
           <div className="relative z-10 mb-8">
-            <div className="flex items-center gap-3 mb-10 animate-in fade-in slide-in-from-left-4 duration-700">
-              <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl">
-                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-bold text-white text-xl tracking-tight">QueueLess India</p>
-                <p className="text-purple-200 text-sm font-medium tracking-wide uppercase mt-0.5">GovTech Initiative</p>
-              </div>
+            <div className="mb-10 animate-in fade-in slide-in-from-left-4 duration-700">
+              <img src="/src/QueueLess-India-logo.png" alt="QueueLess Logo" className="h-16 lg:h-20 w-auto object-contain drop-shadow-md" />
             </div>
 
             <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6 animate-in fade-in slide-in-from-left-4 duration-700 delay-150">

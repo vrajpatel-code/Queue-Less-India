@@ -25,23 +25,30 @@ export default function TokenCard({ token, position, waitTime, department, isLiv
     if (waitTime === undefined || waitTime === null || !token?.created_at) return null
     const arrivalDate = new Date(token.created_at)
 
+    const isFirst = Number(position) === 1
+    let finalWait = isFirst ? 10 : (waitTime || 0)
+
     // Calculate initial arrival time
-    arrivalDate.setMinutes(arrivalDate.getMinutes() + waitTime)
+    arrivalDate.setMinutes(arrivalDate.getMinutes() + finalWait)
 
-    // Check if initial arrival time lands inside or after the break start today
     const arrivalMinsFromMidnight = arrivalDate.getHours() * 60 + arrivalDate.getMinutes()
-    let finalWait = waitTime
+    const createdAtDate = new Date(token.created_at)
+    const createdAtMins = createdAtDate.getHours() * 60 + createdAtDate.getMinutes()
 
-    if (arrivalMinsFromMidnight > breakStartMins) {
-      // Only add padding if their token would overlap the break
-      arrivalDate.setMinutes(arrivalDate.getMinutes() + breakDurationMins)
-      finalWait += breakDurationMins
+    if (arrivalMinsFromMidnight > breakStartMins && createdAtMins < breakEndMins) {
+      // Add pause time only if not generated after break
+      const waitTimeIncrement = createdAtMins <= breakStartMins 
+        ? breakDurationMins 
+        : breakEndMins - createdAtMins
+
+      arrivalDate.setMinutes(arrivalDate.getMinutes() + waitTimeIncrement)
+      finalWait += waitTimeIncrement
     }
 
     return {
       time: arrivalDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
       wait: finalWait,
-      adjusted: finalWait !== waitTime
+      adjusted: finalWait !== (isFirst ? 10 : waitTime)
     }
   })()
 
@@ -83,14 +90,22 @@ export default function TokenCard({ token, position, waitTime, department, isLiv
               {position !== undefined && position !== null ? `#${position}` : '—'}
             </p>
           </div>
-          <div className="text-center relative">
-            <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Est. Wait</p>
-            <p className="text-2xl font-bold text-slate-800 flex justify-center items-center gap-2">
-              {timeData ? `${timeData.wait}m` : '—'}
-              {timeData?.adjusted && (
-                <span title="Includes lunch break time" className="cursor-help w-4 h-4 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-[10px] font-bold">!</span>
-              )}
-            </p>
+          <div className="text-center relative flex flex-col justify-center">
+            {Number(position) === 1 ? (
+              <p className="text-xs font-bold text-emerald-600 leading-tight flex items-center justify-center h-full">
+                You are First To<br />Generate Tocken
+              </p>
+            ) : (
+              <>
+                <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Est. Wait</p>
+                <p className="text-2xl font-bold text-slate-800 flex justify-center items-center gap-2">
+                  {timeData ? `${timeData.wait}m` : '—'}
+                  {timeData?.adjusted && (
+                    <span title="Includes lunch break time" className="cursor-help w-4 h-4 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-[10px] font-bold">!</span>
+                  )}
+                </p>
+              </>
+            )}
           </div>
           <div className="text-center">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Arrival</p>
